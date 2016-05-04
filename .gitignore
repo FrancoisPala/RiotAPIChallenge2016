@@ -220,3 +220,4 @@ config
 .idea
 routes
 views
+config.json

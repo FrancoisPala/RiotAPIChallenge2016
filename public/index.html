@@ -8,7 +8,7 @@
     </head>
     <body>
         <section class="container mid">
-            <section class="jumbotron test">
+            <section id="welcome" class="jumbotron test">
                 <h1>Welcome</h1>
                 <form name="form" method="" onsubmit="return validate()" action="">
                     <input type="text" name="summName" placeholder="Summoner Name">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
@@ -37,20 +37,24 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
-
-    <script type="text/javascript">
+    <script src="javascripts/index.js"></script>
+    <!--<script type="text/javascript">
         var socket = io();
         function validate() {
             var summName = document.forms["form"]["summName"].value;
             var region = document.forms["form"]["regions"].value
             console.log(summName + region);
             socket.emit("client info", summName + "," + region);
-
+            return false;
         }
         socket.on("info sent", function (data) {
-            console.log("HEYOOOOOOOOO");
             console.log("received this: " + data);
+            $("#welcome").animate({
+                opacity: 0,
+            }, 1000, function () {
+                $("#welcome").css("display", "none");
+            });
         });
 
-    </script>
+    </script>-->
 </html>

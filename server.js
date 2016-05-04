@@ -18,7 +18,7 @@ app.use(express.static('public'));
 serv.listen(port);
 
 
-let pathToYourApiKey = "./config";
+let pathToYourApiKey = "./config.json";
 let APIKey = "";
 let region = "";
 let location = "";
@@ -48,18 +48,11 @@ function main () {
             let tmp = data.split(",");
             summonerName = tmp[0];
             region = tmp[1].toLowerCase();
-            console.log(summonerName + " " + region);
-
             async.waterfall([
                 getGameInfo,
-
                 function bignou (callback) {
-                    //console.log("Summ name= " + championsMap + " and TOSEND is: " + toSend);
-                    let tmp = JSON.stringify(toSend);
-                    console.log("CHUISLA");
                     socket.emit("info sent", toSend);
-                    console.log("ET LA AUSSI");
-                    //callback(null);
+                    callback(null);
                 }
             ], function (err, result) {
                 console.log("\nMAIN WATERFALL IS DONE\n" + err + " + " + result);
@@ -71,33 +64,28 @@ function main () {
 
 
 function getGameInfo(callback) {
-    console.log("A");
     async.waterfall([
         async.apply(getApiKey, pathToYourApiKey),
         getVersion,
         getChampionsJson,
         getPlayerInfo
     ], function (err, result) {
-        console.log("in the second waterfall");
         callback(null);
     });
 }
 
 function getPlayerInfo(callback) {
-    console.log("E");
     async.waterfall([
         getSummonerId,
         getSummonerMasteries,
         mergeInfo
     ], function (err, result) {
-         console.log("DONE");
         callback(null);
     });
 }
 
 function mergeInfo(champMasteries, callback) {
     //in here we merge champion masteries and championsmap
-    console.log("H");
     for (let i = 0; i < champMasteries.length; ++i) {
         let champId = champMasteries[i].championId;
         let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + version + "/img/champion/" + championsMap[champId][1] + ".png";
@@ -106,12 +94,10 @@ function mergeInfo(champMasteries, callback) {
         champId = championsMap[champId];
     }
     toSend = champMasteries;
-    console.log("TOSEND IS: " + toSend);
     callback(null);
 }
 
 function getVersion (ApiKey, callback) {
-    console.log("C");
     let req = "https://global.api.pvp.net/api/lol/static-data/" + region + "/v1.2/versions?api_key=" + ApiKey;
     request(req, function (error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -126,7 +112,6 @@ function getVersion (ApiKey, callback) {
 }
 
 function getChampionsJson (callback) {
-    console.log("D");
     let req = "http://ddragon.leagueoflegends.com/cdn/" + version + "/data/en_US/champion.json " ;
     request(req, function (error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -150,19 +135,11 @@ function getChampionsJson (callback) {
 }
 
 function getApiKey(file, callback) {
-    console.log("B");
-    let fs = require('fs');
-    let tmp = "";
-    fs.readFile(file, 'utf8', function(err, contents) {
-        tmp = contents.split(":");
-        tmp = tmp[1];
-        APIKey = tmp;
-        callback(null, tmp);
-    });
+    APIKey = require(file);
+    callback(null, APIKey);
 }
 
 function getSummonerId(callback) {
-    console.log("F");
     let req = "https://na.api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + summonerName + "?api_key=" + APIKey;
     let sN = summonerName.replace(/\s+/g, '');
     request(req, function (error, response, body) {
@@ -177,7 +154,6 @@ function getSummonerId(callback) {
 }
 
 function getSummonerMasteries(summId, callback) {
-    console.log("G");
     let req = "https://na.api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + summId + "/champions?api_key=" + APIKey;
     request(req, function (error, response, body) {
         if (!error && response.statusCode == 200) {
