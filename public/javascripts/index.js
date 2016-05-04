@@ -4,7 +4,7 @@
 var socket = io();
 function validate() {
     var summName = document.forms["form"]["summName"].value;
-    var region = document.forms["form"]["regions"].value
+    var region = document.forms["form"]["regions"].value;
     console.log(summName + region);
     socket.emit("client info", summName + "," + region);
     return false;
