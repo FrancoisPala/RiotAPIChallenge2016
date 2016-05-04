@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <head>
+        <meta charset="UTF-8">
+        <title>Masteries Info</title>
+    </head>
+    <body>
+        <section class="container mid">
+            <section class="jumbotron test">
+                <h1>Welcome</h1>
+                <form name="form" method="" onsubmit="return validate()" action="">
+                    <input type="text" name="summName" placeholder="Summoner Name">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <select name="regions">
+                        <option value="BR">BR</option>
+                        <option value="EUNE">EUNE</option>
+                        <option value="EUW">EUW</option>
+                        <option value="JP">JP</option>
+                        <option value="KR">KR</option>
+                        <option value="LAN">LAN</option>
+                        <option value="LAS">LAS</option>
+                        <option value="NA">NA</option>
+                        <option value="OCE">OCE</option>
+                        <option value="RU">RU</option>
+                        <option value="TR">TR</option>
+                    </select>
+                </form>
+            </section>
+        </section>
+        <footer class="footer">
+            <a href="http://www.deviantart.com/art/League-of-Legends-Clashing-Winds-424811997">art-work source</a>
+        </footer>
+    </body>
+
+    <script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script type="text/javascript">
+        var socket = io();
+        function validate() {
+            var summName = document.forms["form"]["summName"].value;
+            var region = document.forms["form"]["regions"].value
+            console.log(summName + region);
+            socket.emit("client info", summName + "," + region);
+
+        }
+        socket.on("info sent", function (data) {
+            console.log("HEYOOOOOOOOO");
+            console.log("received this: " + data);
+        });
+
+    </script>
+</html>

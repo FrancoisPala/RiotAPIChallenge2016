@@ -1,0 +1,27 @@
+body {
+  background-image: url("../images/background-riven-yasuo.png");
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.mid {
+    position: absolute;
+    top: 40%;
+    left: 20%;
+    height: 30%;
+    width: 50%;
+
+}
+
+.footer {
+    position: fixed;
+    bottom: 0%;
+}
+
+.test {
+    text-align: center;
+}
