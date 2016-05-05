@@ -131,10 +131,13 @@ function getPlayerInfo(ApiKey, toSend, championsMap, region, summonerName, versi
 function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, version, callback) {
     let req = "https://na.api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + summonerName + "?api_key=" + ApiKey;
     let sN = summonerName.replace(/\s+/g, '');
+    sN = sN.toLowerCase();
     request(req, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             let str = JSON.parse(body);
-            callback(null, str[sN]['id'], ApiKey, toSend, championsMap, region, summonerName, version);
+            console.log(str);
+            var id = str[sN].id;
+            callback(null, id, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
             console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode)
