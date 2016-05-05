@@ -11,8 +11,6 @@ var async = require('async');
 
 var io = require('socket.io')(serv);
 
-var s = require("./obj-server.js");
-
 app.use(express.static('public'));
 
 serv.listen(port);
@@ -53,13 +51,11 @@ function main () {
             region = tmp[1].toLowerCase();
             async.waterfall([
                 async.apply(getGameInfo, ApiKey, toSend, championsMap, region, summonerName, version),
-                function (ApiKey, toSend, championsMap, region, summonerName, version, callback) {
-                    console.log("\nAt the end, ApiKey= " + ApiKey + "\ntoSend= " + toSend + "\nchampionsMap= " + championsMap + "\nregion= " + region + "\nsummonerName= " + summonerName + "\nversion= " + version + "\n");
+            ], function (err, ApiKey, toSend, championsMap, region, summonerName, version) {
+                if (!err) {
                     socket.emit("info sent", toSend);
-                    callback(null);
                 }
-            ], function (err, result) {
-                console.log("\nMAIN WATERFALL IS DONE\n" + err + " + " + result);
+                console.log("\nMAIN WATERFALL IS DONE\n");
             });
         });
     });
@@ -74,7 +70,7 @@ function getGameInfo(ApiKey, toSend, championsMap, region, summonerName, version
         getChampionsJson,
         getPlayerInfo
     ], function (err, ApiKey, toSend, championsMap, region, summonerName, version) {
-        console.log("\nJUST BEFORE the end, ApiKey= " + ApiKey + "\ntoSend= " + toSend + "\nchampionsMap= " + championsMap + "\nregion= " + region + "\nsummonerName= " + summonerName + "\nversion= " + version + "\n");
+        //console.log("\nJUST BEFORE the end, ApiKey= " + ApiKey + "\ntoSend= " + toSend + "\nchampionsMap= " + championsMap + "\nregion= " + region + "\nsummonerName= " + summonerName + "\nversion= " + version + "\n");
         callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
     });
 }

@@ -27,6 +27,12 @@
                     </select>
                 </form>
             </section>
+            <section id="Container">
+                <div class="mix"></div>
+                <div class="mix"></div>
+                <div class="mix"></div>
+                <div class="mix"></div>
+            </section>
         </section>
         <footer class="footer">
             <a href="http://www.deviantart.com/art/League-of-Legends-Clashing-Winds-424811997">art-work source</a>
@@ -38,23 +44,4 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="javascripts/index.js"></script>
-    <!--<script type="text/javascript">
-        var socket = io();
-        function validate() {
-            var summName = document.forms["form"]["summName"].value;
-            var region = document.forms["form"]["regions"].value
-            console.log(summName + region);
-            socket.emit("client info", summName + "," + region);
-            return false;
-        }
-        socket.on("info sent", function (data) {
-            console.log("received this: " + data);
-            $("#welcome").animate({
-                opacity: 0,
-            }, 1000, function () {
-                $("#welcome").css("display", "none");
-            });
-        });
-
-    </script>-->
 </html>
