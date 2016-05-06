@@ -168,12 +168,13 @@ function mergeInfo(champMasteries, ApiKey, toSend, championsMap, region, summone
     for (let i = 0; i < champMasteries.length; ++i) {
         let champId = champMasteries[i].championId;
         let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + version + "/img/champion/" + championsMap[champId][1] + ".png";
-        champMasteries[i].name = championsMap[champId][0];
+        champMasteries[i].name = championsMap[champId][1];
+        champMasteries[i].riotName = championsMap[champId][0];
         champMasteries[i].urlImage = urlSquare;
+
         champId = championsMap[champId];
     }
     toSend = champMasteries;
-    console.log("\nIN THE MERGE INFO, ApiKey= " + ApiKey + "\ntoSend= " + toSend + "\nchampionsMap= " + championsMap + "\nregion= " + region + "\nsummonerName= " + summonerName + "\nversion= " + version + "\n");
     callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
 }
 
