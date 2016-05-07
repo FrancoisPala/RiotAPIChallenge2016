@@ -89,7 +89,9 @@ function getVersion (ApiKey, toSend, championsMap, region, summonerName, version
             callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
-            console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode)
+            if (error && response) {
+                console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
+            }
         }
     });
 }
@@ -112,7 +114,9 @@ function getChampionsJson (ApiKey, toSend, championsMap, region, summonerName, v
             callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
-            console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode)
+            if (error && response) {
+                console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
+            }
         }
     });
 }
@@ -140,7 +144,9 @@ function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, versi
             callback(null, id, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
-            console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode)
+            if (error && response) {
+                console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
+            }
         }
     });
 }
@@ -158,7 +164,9 @@ function getSummonerMasteries(summId, ApiKey, toSend, championsMap, region, summ
             callback(null, str, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
-            console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode)
+            if (error && response){
+                console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
+            }
         }
     });
 }
