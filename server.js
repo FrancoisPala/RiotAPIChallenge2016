@@ -175,7 +175,7 @@ function mergeInfo(champMasteries, ApiKey, toSend, championsMap, region, summone
     //in here we merge champion masteries and championsmap
     for (let i = 0; i < champMasteries.length; ++i) {
         let champId = champMasteries[i].championId;
-        let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + version + "/img/champion/" + championsMap[champId][1] + ".png";
+        let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + version + "/img/champion/" + championsMap[champId][0] + ".png";
         champMasteries[i].name = championsMap[champId][1];
         champMasteries[i].riotName = championsMap[champId][0];
         champMasteries[i].urlImage = urlSquare;

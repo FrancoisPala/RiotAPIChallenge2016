@@ -1,7 +1,9 @@
 body {
   background-image: url("../images/background-riven-yasuo.png");
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  /*font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;*/
+    background-attachment: fixed;
+    font-family: 'Bitter', serif !important;
 }
 
 a {
@@ -10,7 +12,7 @@ a {
 
 .mid {
     position: absolute;
-    top: 40%;
+    top: 10%;
     left: 20%;
     height: 30%;
     width: 50%;
@@ -22,6 +24,29 @@ a {
     bottom: 0%;
 }
 
-.test {
+.jumbotron {
     text-align: center;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    color: rgb(220,137,0) !important;
+
+}
+
+.champion {
+    width: 31.5% !important;
+    border: solid;
+    margin: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #b58900;
+    padding: 0 !important;
+}
+
+button {
+    display: none;
+}
+
+img.championImage {
+    float: left;
+    height: 100px;
+    width: 100px;
+    margin-right: 5px;
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+    <link href='https://fonts.googleapis.com/css?family=Bitter:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="stylesheets/style.css">
     <head>
         <meta charset="UTF-8">
@@ -9,10 +9,12 @@
     <body>
         <section class="container mid">
             <section id="welcome" class="jumbotron test">
-                <h1>Welcome</h1>
+                <h1>Welcome!</h1>
+                <p>Find all the information you need about your Champion Masteries.</p>
+                <p>Champion points, chest granted, remaining points until next level, best grade of the season: filter it and find what you need!</p>
                 <form name="form" method="" onsubmit="return validate()" action="">
-                    <input type="text" name="summName" placeholder="Summoner Name">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                    <select name="regions">
+                    <input type="text" class="form-control" name="summName" placeholder="Summoner Name">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    <select name="regions" class="form-control">
                         <option value="BR">BR</option>
                         <option value="EUNE">EUNE</option>
                         <option value="EUW">EUW</option>
@@ -24,10 +26,19 @@
                         <option value="OCE">OCE</option>
                         <option value="RU">RU</option>
                         <option value="TR">TR</option>
-                    </select>
+                    </select></br>
+                    <button type="submit" class="form-control btn btn-default">Submit</button>
                 </form>
             </section>
             <div id="Container">
+                <button class="points-ascending">Points: High to Low</button>
+                <button class="points-descending">Points: Low to High</button>
+                <button class="points-descending">Chest: Granted</button>
+                <button class="points-descending">Chest: Not Granted</button>
+
+
+                <input type="text" class="byname" placeholder="Champion name">
+                </br>
             </div>
         </section>
         <footer class="footer">
@@ -36,6 +47,7 @@
     </body>
 
     <script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+    <script src="javascripts/jquery.mixitup.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
