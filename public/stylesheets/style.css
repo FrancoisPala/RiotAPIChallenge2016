@@ -40,7 +40,71 @@ a {
     padding: 0 !important;
 }
 
+.buttons {
+    font-size: 30px !important;
+}
+
+.a-to-z, .z-to-a {
+    background-color: #3498DB;
+    border-bottom: 5px solid #2980B9;
+    text-shadow: 0px -1px #2980B9;
+}
+
+.points-ascending, .points-descending {
+    background-color: #E74C3C;
+    border-bottom: 5px solid #BD3E31;
+    text-shadow: 0px -1px #BD3E31;
+}
+
+.chest-granted, .chest-not-granted {
+    background-color: #F2CF66;
+    border-bottom: 5px solid #D1B358;
+    text-shadow: 0px -1px #D1B358;
+}
+
+.details, .no-details {
+    background-color: #82BF56;
+    border-bottom: 5px solid #669644;
+    text-shadow: 0px -1px #669644;
+}
+
+.grades-ascending, .grades-descending {
+    background-color: #cb4b16;
+    border-bottom: 5px solid #B64313;
+    text-shadow: 0px -1px #B64313;
+}
+
+.byname {
+    font-size: 30px;
+}
+
+.insideBox {
+    display: none;
+    padding: 5px;
+    /*text-align: center;*/
+    font-size: 16px;
+    margin-top: -20px;
+}
+
+.head {
+    /*margin-top:-40px !important;*/
+    padding-top: 10px;
+    display: none;
+    height: 100px !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    color: rgb(220,137,0) !important;
+    padding-left: 45%;
+}
+
+.mySN {
+    display: block;
+}
+
 button {
+    display: none;
+}
+
+input {
     display: none;
 }
 

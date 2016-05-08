@@ -2,36 +2,106 @@
  * Created by Jam on 03-May-16.
  */
 var socket = io();
-function validate() {
-    var summName = document.forms["form"]["summName"].value;
-    var region = document.forms["form"]["regions"].value;
-    console.log(summName + region);
-    socket.emit("client info", summName + "," + region);
+function validate(option) {
+    var summName;
+    var region;
+    if (option == 'main'){
+        summName = document.forms["form"]["summName"].value;
+        region = document.forms["form"]["regions"].value;
+    }
+    else if (option == 'head') {
+        summName = document.forms["formHead"]["summName"].value;
+        region = document.forms["formHead"]["regions"].value;
+    }
+
+    if (summName && region) {
+        console.log(summName + region);
+        socket.emit("client info", summName + "," + region);
+    }
+    else {
+        $('#subBut').css("display", "block");
+    }
     return false;
 }
 
+var GRADESMIX = {};
+GRADESMIX["S+"] = "A";
+GRADESMIX["S"] = "B";
+GRADESMIX["S-"] = "C";
+GRADESMIX["A+"] = "D";
+GRADESMIX["A"] = "E";
+GRADESMIX["A-"] = "F";
+GRADESMIX["B+"] = "G";
+GRADESMIX["B"] = "H";
+GRADESMIX["B-"] = "I";
+GRADESMIX["C+"] = "J";
+GRADESMIX["C"] = "K";
+GRADESMIX["C-"] = "L";
+GRADESMIX["D+"] = "M";
+GRADESMIX["D"] = "N";
+GRADESMIX["D-"] = "O";
+
+
 function displayChampInfos(elem, index, array) {
-    $("#Container").append('<div class=" mix category-42 champion col-md-3 name-' + elem.name.toLowerCase() + '"'+ 'data-name="' + elem.name + '"' + 'data-points="' + elem.championPoints +'">'
+    var toAppend = '<div class=" mix category-42 champion col-md-3 name-' + elem.name.toLowerCase()
+        + '"' + 'data-name="' + elem.name
+        + '"' + 'data-points="' + elem.championPoints
+        + '"' + 'data-chest="' + elem.chestGranted
+        + '"' + 'data-letter="' + GRADESMIX[elem.highestGrade];
+        toAppend +='">'
         + '<img class="championImage" src="' + elem.urlImage + '">'
         + '<h2>' + elem.name + '</h2>'
-        + '<h3>Mastery Level<strong> ' + elem.championLevel + '</strong></h3>'
-        + '</br>Total Points: <strong>' + elem.championPoints + '</strong>'
-        + '</br>Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>'
-        + '</br>Current level: <strong>' + elem.championLevel + '</strong>'
-        + '</br>Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>'
-        + '</br>Chest granted: <strong>' + elem.chestGranted + '</strong>'
-        + '</br>Highest grade this season: <strong>' + elem.highestGrade + '</strong>'
-        +
-        '</div>');
+        + '<h3>Mastery Level<strong> ' + elem.championLevel + '</strong></h3>';
+    var tmp = '<div class="insideBox">' + '<h3><strong>' + elem.championPoints + '</strong> Total Points</h3>';
+    if (elem.championPointsUntilNextLevel > 0) {
+        tmp += 'Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>';
+    }
+    else {
+        tmp += '<strong>Maximum level reached</strong>';
+    }
+    if (elem.chestGranted == true) {
+        tmp += '</br>Chest granted: <strong>Yes</strong>';
+    }
+    else {
+        tmp += '</br>Chest granted: <strong>No</strong>';
+    }
+    if (elem.highestGrade != undefined) {
+        tmp += '</br>Highest grade this season: <strong>' + elem.highestGrade + '</strong>';
+    }
+    else {
+        tmp += '</br><strong>No grade yet</strong>';
+    }
+    tmp += '</div>';
+    toAppend += tmp + '</div>';
+
+    /*        '' +
+            '</div>';
+
+            + '</br><h3><strong>' + elem.championPoints + '</strong> Total Points</h3> '
+            + '</br>Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>'
+            + '</br>Current level: <strong>' + elem.championLevel + '</strong>'
+            + '</br>Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>'
+            + '</br>Chest granted: <strong>' + elem.chestGranted + '</strong>'
+            + '</br>Highest grade this season: <strong>' + elem.highestGrade + '</strong>'
+            +*/
+
+    $("#Display").append(toAppend);
 }
 
 socket.on("info sent", function (data) {
-    
+    $('.head').css("display", "block");
+
+    $('#Display').html("");
     console.log(data.length);
     console.log(data[0]);
     data.forEach(displayChampInfos);
-    $('#Container').mixItUp();
+    $('#Display').mixItUp();
     $('button.points-ascending').show();
+    $('button.chest-granted').show();
+    $('button.a-to-z').show();
+    $('button.details').show();
+    $('button.grades-ascending').show();
+    $('input').show();
     $("#welcome").animate({
         opacity: 0,
     }, 500, function () {
@@ -40,38 +110,154 @@ socket.on("info sent", function (data) {
 });
 
 $(document).ready(function() {
+    $("button.grades-ascending").click(function() {
+        $('#Display').mixItUp('sort', 'letter:desc points:asc');
+
+        $(this).hide();
+        $('button.grades-descending').show();
+
+        $('button.a-to-z').show();
+        $('button.z-to-a').hide();
+
+        $('button.points-ascending').show();
+        $('button.points-descending').hide();
+
+    });
+    $("button.grades-descending").click(function() {
+        $('#Display').mixItUp('sort', 'letter:asc points:desc');
+
+        $(this).hide();
+        $('button.grades-ascending').show();
+
+        $('button.a-to-z').show();
+        $('button.z-to-a').hide();
+
+        $('button.points-ascending').show();
+        $('button.points-descending').hide();
+
+    });
+
+
+    $("button.details").click(function() {
+        var selector = document.querySelectorAll(".insideBox");
+        for (var i = 0; i < selector.length; ++i){
+            selector[i].style.display = 'block';
+        }
+        $(this).hide();
+        $("button.no-details").show();
+    });
+    $("button.no-details").click(function() {
+        var selector = document.querySelectorAll(".insideBox");
+        for (var i = 0; i < selector.length; ++i){
+            selector[i].style.display = 'none';
+        }
+        $(this).hide();
+        $("button.details").show();
+    });
+
+
+    $("button.chest-granted").click(function() {
+        $('#Display').mixItUp('sort', 'chest:asc points:asc');
+
+        $(this).hide();
+        $('button.chest-not-granted').show();
+
+        $('button.a-to-z').show();
+        $('button.z-to-a').hide();
+
+        $('button.points-ascending').show();
+        $('button.points-descending').hide();
+
+
+    });
+    $("button.chest-not-granted").click(function() {
+        $('#Display').mixItUp('sort', 'chest:desc points:desc');
+
+        $(this).hide();
+        $('button.chest-granted').show();
+
+        $('button.a-to-z').show();
+        $('button.z-to-a').hide();
+
+        $('button.points-ascending').show();
+        $('button.points-descending').hide();
+
+    });
+
+    $("button.a-to-z").click(function() {
+        $('#Display').mixItUp('sort', 'name:desc');
+
+        $(this).hide();
+        $('button.z-to-a').show();
+
+        $('button.chest-not-granted').hide();
+        $('button.chest-granted').show();
+
+        $('button.points-ascending').show();
+        $('button.points-descending').hide();
+
+
+    });
+    $("button.z-to-a").click(function() {
+        $('#Display').mixItUp('sort', 'name:asc');
+
+        $(this).hide();
+        $('button.a-to-z').show();
+
+        $('button.chest-not-granted').hide();
+        $('button.chest-granted').show();
+
+        $('button.points-ascending').show();
+        $('button.points-descending').hide();
+
+
+    });
+
+
     $("button.points-ascending").click(function() {
         console.log("ascending");
-        $('#Container').mixItUp('multiMix', {
+        $('#Display').mixItUp('multiMix', {
             filter: '.category-42',
             sort: 'points:asc'
         });
-        //$('#Container').mixItUp('filter', '.category-42');
-        //$('#Container').mixItUp('sort', 'points:asc');
+        //$('#Display').mixItUp('filter', '.category-42');
+        //$('#Display').mixItUp('sort', 'points:asc');
 
         //$(".category-42").mixItUp('sort', 'points:asc');
-        //$('#Container').mixItUp('filter', '.category-42');
+        //$('#Display').mixItUp('filter', '.category-42');
 
         $(this).hide();
         $('button.points-descending').show();
+
+        $('button.a-to-z').show();
+        $('button.z-to-a').hide();
+
+        $('button.chest-not-granted').hide();
+        $('button.chest-granted').show();
     });
 
     $("button.points-descending").click(function() {
         console.log("descending");
-        //$('#Container').mixItUp('filter', '.category-42');
-        //$('#Container').mixItUp('sort', 'points:desc');
-        $('#Container').mixItUp('multiMix', {
+        //$('#Display').mixItUp('filter', '.category-42');
+        //$('#Display').mixItUp('sort', 'points:desc');
+        $('#Display').mixItUp('multiMix', {
             filter: '.category-42',
             sort: 'points:desc'
         });
-        //$('#Container').mixItUp('filter', '.category-42');
+        //$('#Display').mixItUp('filter', '.category-42');
 
         //$('.category-42').mixItUp('sort', 'points:desc');
         $(this).hide();
         $('button.points-ascending').show();
+
+        $('button.a-to-z').show();
+        $('button.z-to-a').hide();
+
+        $('button.chest-not-granted').hide();
+        $('button.chest-granted').show();
     });
 
-    //$('#Container').on('mixEnd', function(e, state){
+    //$('#Display').on('mixEnd', function(e, state){
     //    var name = $("input.byname").val();
     //    if (name.length > 0) {
     //        $('div.champion').hide();
@@ -89,7 +275,7 @@ $(document).ready(function() {
         console.log("on fade in");
         $("div[class*='name-" + name + "']").fadeIn();
         $("div[class*='name-" + name + "']").toggleClass("category-42");
-        //$('#Container').mixItUp('filter', '.category-42');
+        //$('#Display').mixItUp('filter', '.category-42');
 
     });
 
