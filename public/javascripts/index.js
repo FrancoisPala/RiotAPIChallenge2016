@@ -52,38 +52,14 @@ function displayChampInfos(elem, index, array) {
         + '<img class="championImage" src="' + elem.urlImage + '">'
         + '<h2>' + elem.name + '</h2>'
         + '<h3>Mastery Level<strong> ' + elem.championLevel + '</strong></h3>';
+
     var tmp = '<div class="insideBox">' + '<h3><strong>' + elem.championPoints + '</strong> Total Points</h3>';
-    if (elem.championPointsUntilNextLevel > 0) {
-        tmp += 'Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>';
-    }
-    else {
-        tmp += '<strong>Maximum level reached</strong>';
-    }
-    if (elem.chestGranted == true) {
-        tmp += '</br>Chest granted: <strong>Yes</strong>';
-    }
-    else {
-        tmp += '</br>Chest granted: <strong>No</strong>';
-    }
-    if (elem.highestGrade != undefined) {
-        tmp += '</br>Highest grade this season: <strong>' + elem.highestGrade + '</strong>';
-    }
-    else {
-        tmp += '</br><strong>No grade yet</strong>';
-    }
-    tmp += '</div>';
+        tmp += elem.championPointsUntilNextLevel > 0 ? 'Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>' : '<strong>Maximum level reached</strong>';
+        tmp += elem.chestGranted ? '</br>Chest granted: <strong>Yes</strong>' : '</br>Chest granted: <strong>No</strong>';
+        tmp += elem.highestGrade != undefined ? '</br>Highest grade this season: <strong>' + elem.highestGrade + '</strong>' : '</br><strong>No grade yet</strong>';
+        tmp += '</div>';
+    
     toAppend += tmp + '</div>';
-
-    /*        '' +
-            '</div>';
-
-            + '</br><h3><strong>' + elem.championPoints + '</strong> Total Points</h3> '
-            + '</br>Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>'
-            + '</br>Current level: <strong>' + elem.championLevel + '</strong>'
-            + '</br>Next level in: <strong>' + elem.championPointsUntilNextLevel + '</strong>'
-            + '</br>Chest granted: <strong>' + elem.chestGranted + '</strong>'
-            + '</br>Highest grade this season: <strong>' + elem.highestGrade + '</strong>'
-            +*/
 
     $("#Display").append(toAppend);
 }
