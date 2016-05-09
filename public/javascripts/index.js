@@ -14,7 +14,6 @@ function validate(option) {
         region = document.forms["formHead"]["regions"].value;
         $("input.byname").val("");
     }
-
     if (summName && region) {
         console.log(summName + region);
         socket.emit("client info", summName + "," + region);

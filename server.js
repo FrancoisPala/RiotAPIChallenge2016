@@ -50,7 +50,7 @@ function main () {
         let summonerName = ""; //the summoner's name
         let version = ""; //the current version of the game, for the square pictures we decided to always use the latest ones
         let championsMap = {}; //a custom object containing info we need about the summoner's champions
-        let toSend = null; //the final thing to send to the client for it to print the info
+        let toSend = {}; //the final thing to send to the client for it to print the info
 
         console.log("Client n° " + clientNumber + " connected");
 
