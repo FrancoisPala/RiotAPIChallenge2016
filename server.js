@@ -22,6 +22,7 @@ app.use(express.static('public'));
 serv.listen(port);
 
 //This is the variable you might have to change to have the project working.
+//Make sure your file has the .json extension to it. Also don't forget the quotes around your API-key! Have fun!
 let pathToYourApiKey = "./config.json";
 
 let clientNumber = 0;
@@ -43,7 +44,7 @@ function main () {
     console.log("Server started listening on port: " + port);
     io.on('connection', function (socket) {
         ++clientNumber; //number of clients to ever connect on the site (per page load)
-        let called = 0; //this prevents users from spamming the "submit" button on the client and have us execute the same request too many times
+        let called = false; //this prevents users from spamming the "submit" button on the client and have us execute the same request too many times
         let ApiKey = ""; //the API-Key we got from the requesting
         let region = ""; //the summoner's region
         let summonerName = ""; //the summoner's name
@@ -51,11 +52,11 @@ function main () {
         let championsMap = {}; //a custom object containing info we need about the summoner's champions
         let toSend = null; //the final thing to send to the client for it to print the info
 
-        console.log("Client number " + clientNumber + " connected");
+        console.log("Client n° " + clientNumber + " connected");
 
         socket.on("client info", function (data) {
-            if (called == 0){
-                called = 1;
+            if (called == false){
+                called = true;
                 let tmp = data.split(",");
                 summonerName = tmp[0];
                 region = tmp[1].toLowerCase();
@@ -64,7 +65,7 @@ function main () {
                 ], function (err, ApiKey, toSend, championsMap, region, summonerName, version) {
                     if (!err) {
                         socket.emit("info sent", toSend);
-                        called = 0;
+                        called = false;
                     }
                 });
             }
@@ -147,7 +148,11 @@ function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, versi
         if (!error && response.statusCode == 200) {
             let str = JSON.parse(body);
             console.log(str);
-            var id = str[sN].id;
+            let id = {};
+            id.id = str[sN].id;
+            id.name = str[sN].name;
+            id.icon = str[sN].profileIconID;
+            id.level = str[sN].summonerLevel;
             callback(null, id, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
@@ -158,8 +163,8 @@ function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, versi
     });
 }
 
-function getSummonerMasteries(summId, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
-    let req = "https://na.api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + summId + "/champions?api_key=" + ApiKey;
+function getSummonerMasteries(infos, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
+    let req = "https://na.api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + infos.id + "/champions?api_key=" + ApiKey;
     request(req, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             let str = JSON.parse(body);
@@ -168,7 +173,7 @@ function getSummonerMasteries(summId, ApiKey, toSend, championsMap, region, summ
                 delete str[i].lastPlayTime;
                 delete str[i].championPointsSinceLastLevel;
             }
-            callback(null, str, ApiKey, toSend, championsMap, region, summonerName, version);
+            callback(null,infos, str, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
             if (error && response){
@@ -178,8 +183,9 @@ function getSummonerMasteries(summId, ApiKey, toSend, championsMap, region, summ
     });
 }
 
-function mergeInfo(champMasteries, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
+function mergeInfo(infos, champMasteries, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
     //in here we merge champion masteries and championsmap
+    toSend = infos;
     for (let i = 0; i < champMasteries.length; ++i) {
         let champId = champMasteries[i].championId;
         let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + version + "/img/champion/" + championsMap[champId][0] + ".png";
@@ -188,7 +194,7 @@ function mergeInfo(champMasteries, ApiKey, toSend, championsMap, region, summone
         champMasteries[i].urlImage = urlSquare;
         champId = championsMap[champId];
     }
-    toSend = champMasteries;
+    toSend += champMasteries;
     callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
 }
 
