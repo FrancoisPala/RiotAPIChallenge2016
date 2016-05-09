@@ -151,7 +151,7 @@ function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, versi
             let id = {};
             id.id = str[sN].id;
             id.name = str[sN].name;
-            id.icon = str[sN].profileIconId;
+            id.icon = "http://ddragon.leagueoflegends.com/cdn/6.9.1/img/profileicon/" + str[sN].profileIconId + ".png";
             id.level = str[sN].summonerLevel;
             callback(null, id, ApiKey, toSend, championsMap, region, summonerName, version);
         }
