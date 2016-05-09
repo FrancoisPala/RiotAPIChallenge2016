@@ -44,7 +44,7 @@ var GRADESMIX = {};
 
 
 function displayChampInfos(elem, index, array) {
-    var toAppend = '<div class=" mix category-42 champion col-md-3 col-xs-12 name-' + elem.name.toLowerCase()
+    var toAppend = '<div class=" mix champion col-md-3 col-xs-12 name-' + elem.name.toLowerCase()
         + '"' + 'data-name="' + elem.name
         + '"' + 'data-points="' + elem.championPoints
         + '"' + 'data-chest="' + elem.chestGranted
@@ -87,12 +87,22 @@ $(document).ready(function() {
         }
     });*/
 
+    $('#Display').mixItUp({
+        callbacks: {
+            onMixEnd: function(state){
+                console.log(state);
+            }   
+        }
+    });
+
     $("button.grades-ascending").click(function() {
+        console.log("ASCENDING");
         $('#Display').mixItUp('sort', 'letter:desc points:asc');
         $(".current").toggleClass("current");
         $(this).toggleClass("current");
     });
     $("button.grades-descending").click(function() {
+        console.log("DESCENDING");
         $('#Display').mixItUp('sort', 'letter:asc points:desc');
         $(".current").toggleClass("current");
         $(this).toggleClass("current");
@@ -129,35 +139,32 @@ $(document).ready(function() {
 
 
     $("button.points-ascending").click(function() {
-        console.log("ascending");
-        $('#Display').mixItUp('multiMix', {
-            filter: '.category-42',
-            sort: 'points:asc'
-        });
+        $('#Display').mixItUp('sort', 'points:asc');
         $(".current").toggleClass("current");
         $(this).toggleClass("current");
     });
     $("button.points-descending").click(function() {
-        $('#Display').mixItUp('multiMix', {
-            filter: '.category-42',
-            sort: 'points:desc'
-        });
+        $('#Display').mixItUp('sort', 'points:desc');
         $(".current").toggleClass("current");
         $(this).toggleClass("current");
     });
 
     $("input.byname").on("keyup", function() {
         var name = $(this).val();
-        console.log(name.length + "   --- ["+name+"]");
-        if (name.length > 0) {
-            console.log("on hide");
-            $('div.champion').toggleClass("hidden");
-            $('div.champion').toggleClass('category-42');
+        console.log("name = [" + name + "]");
+        if (name.length != 0) {
+            console.log(name.length + "   --- ["+name+"]");
+            if (name.length > 0) {
+                console.log("on hide");
+                $('div.champion').addClass("hidden");
+            }
+            console.log("on fade in");
+//            $("div[class*='name-" + name + "']").fadeIn();
+            $("div[class*='name-" + name + "']").removeClass("hidden");
         }
-        console.log("on fade in");
-        $("div[class*='name-" + name + "']").fadeIn();
-        $("div[class*='name-" + name + "']").toggleClass("category-42");
-        $("div[class*='name-" + name + "']").toggleClass("hidden");
+        else {
+            $("div.champion").removeClass("hidden");
+        }
     });
 
 });

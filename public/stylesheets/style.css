@@ -192,3 +192,7 @@ img.championImage {
 .hidden {
     display: none;
 }
+
+#Display .mix{
+    display: none;
+}
