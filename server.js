@@ -185,7 +185,7 @@ function getSummonerMasteries(infos, ApiKey, toSend, championsMap, region, summo
 
 function mergeInfo(infos, champMasteries, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
     //in here we merge champion masteries and championsmap
-    toSend = infos;
+    toSend.infos = infos;
     for (let i = 0; i < champMasteries.length; ++i) {
         let champId = champMasteries[i].championId;
         let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + version + "/img/champion/" + championsMap[champId][0] + ".png";
@@ -194,7 +194,7 @@ function mergeInfo(infos, champMasteries, ApiKey, toSend, championsMap, region, 
         champMasteries[i].urlImage = urlSquare;
         champId = championsMap[champId];
     }
-    toSend += champMasteries;
+    toSend.champMasteries = champMasteries;
     callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
 }
 
