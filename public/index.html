@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link href='https://fonts.googleapis.com/css?family=Bitter:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Rajdhani:400,600,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="stylesheets/style.css">
     <head>
         <meta charset="UTF-8">
@@ -8,10 +10,10 @@
     </head>
     <body>
         <section class="container mid">
-            <section class=" head">
-                <form name="formHead" method="" onsubmit="return validate('head')" action="">
-                    <input type="text" class="mySN" name="summName" placeholder="Summoner Name">
-                    <select name="regions" class="">
+            <section class="head">
+                <form class="form-inline" name="formHead" method="" onsubmit="return validate('head')" action="">
+                    <input type="text" class="mySN form-control" name="summName" placeholder="Summoner Name">
+                    <select name="regions" class="form-control">
                         <option value="BR">BR</option>
                         <option value="EUNE">EUNE</option>
                         <option value="EUW">EUW</option>
@@ -23,7 +25,7 @@
                         <option value="OCE">OCE</option>
                         <option value="RU">RU</option>
                         <option value="TR">TR</option>
-                    </select></br>
+                    </select>
                     <button type="submit" class="btn btn-default" id="subButHead">Submit</button>
                 </form>
             </section>
@@ -50,17 +52,26 @@
                 </form>
             </section>
             <div id="Container">
-                <button class="buttons a-to-z">A-to-Z</button>
-                <button class="buttons z-to-a">Z-to-A</button>
-                <button class="buttons points-ascending">Points: High to Low</button>
-                <button class="buttons points-descending">Points: Low to High</button>
-                <button class="buttons chest-granted">Chest: Granted</button>
-                <button class="buttons chest-not-granted">Chest: Not Granted</button>
-                <button class="buttons details">Show details</button>
-                <button class="buttons no-details">Hide details</button>
-                <button class="buttons grades-ascending">Grades: Best to Worst</button>
-                <button class="buttons grades-descending">Grades: Worst to Best</button>
-                <input type="text" class="byname" placeholder="Champion name">
+                <div class="button-container col-md-2">
+                    <button class="buttons z-to-a">Name <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span></button></br>
+                    <button class="buttons a-to-z">Name <span class="glyphicon glyphicon-sort-by-alphabet-alt" aria-hidden="true"></span></button>              
+                </div>
+                <div class="button-container col-md-2">
+                    <button class="buttons points-ascending">Points <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button></br>
+                    <button class="buttons points-descending">Points <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
+                </div>
+                <div class="button-container col-md-2">
+                    <button class="buttons chest-granted">Chest <span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></br>
+                    <button class="buttons chest-not-granted">Chest <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                </div>
+                <div class="button-container col-md-2">
+                    <button class="buttons grades-ascending">Grade <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button></br>
+                    <button class="buttons grades-descending">Grade <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
+                </div>
+                <div class="button-container col-md-4">
+                    <input type="text" class="byname" placeholder="Champion name"></br>
+                    <button class="buttons details"><span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span>Details</button>
+                </div>
                 </br>
                 <div id="Display">
 
@@ -74,7 +85,6 @@
 
     <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
     <script src="javascripts/jquery.mixitup.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="javascripts/index.js"></script>

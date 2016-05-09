@@ -3,21 +3,21 @@ body {
   padding: 50px;
   /*font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;*/
     background-attachment: fixed;
-    font-family: 'Bitter', serif !important;
+    /*font-family: 'Bitter', serif !important;*/
+    font-family: 'Rajdhani', sans-serif;
 }
 
 a {
   color: #00B7FF;
 }
 
-.mid {
+/*.mid {
     position: absolute;
     top: 10%;
     left: 20%;
     height: 30%;
     width: 50%;
-
-}
+}*/
 
 .footer {
     position: fixed;
@@ -33,7 +33,7 @@ a {
 
 .champion {
     width: 31.5% !important;
-    border: solid;
+    border-top: 3px solid;
     margin: 10px;
     background-color: rgba(0, 0, 0, 0.7);
     color: #b58900;
@@ -41,7 +41,13 @@ a {
 }
 
 .buttons {
-    font-size: 30px !important;
+    width: 100%;
+    font-size: 20px !important;
+    border: 0px solid;
+}
+
+.buttons:hover {
+    font-weight: bold;
 }
 
 .a-to-z, .z-to-a {
@@ -62,38 +68,81 @@ a {
     text-shadow: 0px -1px #D1B358;
 }
 
-.details, .no-details {
-    background-color: #82BF56;
-    border-bottom: 5px solid #669644;
-    text-shadow: 0px -1px #669644;
-}
-
 .grades-ascending, .grades-descending {
     background-color: #cb4b16;
     border-bottom: 5px solid #B64313;
     text-shadow: 0px -1px #B64313;
 }
 
+.details, .no-details {
+    background-color: #82BF56;
+    border-bottom: 5px solid #669644;
+    text-shadow: 0px -1px #669644;
+    margin-bottom: 10px;
+}
+
+.a-to-z.current, .z-to-a.current {
+    background-color: #1a4c6d;
+    border-bottom: 5px solid #143c57;
+    text-shadow: 0px -1px #3498DB;
+}
+
+.points-ascending.current, .points-descending.current {
+    background-color: #73261e;
+    border-bottom: 5px solid #5c1e18;
+    text-shadow: 0px -1px #E74C3C;
+}
+
+.chest-granted.current, .chest-not-granted.current {
+    background-color: #796733;
+    border-bottom: 5px solid #605228;
+    text-shadow: 0px -1px #F2CF66;
+}
+
+.grades-ascending.current, .grades-descending.current {
+    background-color: #65250b;
+    border-bottom: 5px solid #511e08;
+    text-shadow: 0px -1px #cb4b16;
+}
+
 .byname {
-    font-size: 30px;
+    font-size: 20px;
+    width: 100%;
+    padding-left: 10px;
+    text-align: center;
+    padding-bottom: 2px;
 }
 
 .insideBox {
     display: none;
-    padding: 5px;
-    /*text-align: center;*/
+    padding: 10px;
     font-size: 16px;
     margin-top: -20px;
 }
 
+.champion h3 {
+    margin-top: 15px;
+    margin-bottom: 0px;
+}
+
+.insideBox h3 {
+    margin-bottom: 10px;
+    margin-top: 25px;
+}
+
 .head {
     /*margin-top:-40px !important;*/
-    padding-top: 10px;
+    /*padding-top: 10px;*/
     display: none;
-    height: 100px !important;
+    /*height: 100px !important;*/
     background-color: rgba(0, 0, 0, 0.8) !important;
     color: rgb(220,137,0) !important;
-    padding-left: 45%;
+    text-align: center;
+    border-radius: 6px;
+}
+
+.head form {
+    padding: 25px;
 }
 
 .mySN {
@@ -112,5 +161,34 @@ img.championImage {
     float: left;
     height: 100px;
     width: 100px;
-    margin-right: 5px;
+    margin-right: 10px;
+}
+
+.button-container {
+    padding-left: -15px !important;
+    padding-right: -15px !important;
+}
+
+#Container {
+    margin-top: 20px;
+    height: 100%;
+}
+
+.col-md-2, .col-md-4 {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.glyphicon {
+    vertical-align: middle;
+    top: 0px;
+    font-size: 0.9em;
+}
+
+.form-control {
+    font-size: 15px;
+}
+
+.hidden {
+    display: none;
 }
