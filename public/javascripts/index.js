@@ -79,7 +79,7 @@ socket.on("info sent", function(data) {
     }, 500, function () {
         $("#welcome").css("display", "none");
     });
-    $(".summoner").append('<img class="summoner-icon" src="'+data.infos.icon+'"><div class="summoner-infos">' + data.infos.name + '</br>Level ' + data.infos.level + '+</br>' + region + '</div>');
+    $(".summoner").append('<img class="summoner-icon" src="'+data.infos.icon+'"><div class="summoner-infos">' + data.infos.name + '</br>Level ' + data.infos.level + '</br>' + data.infos.region.toUpperCase() + '</div>');
 });
 
 $(document).ready(function() {
