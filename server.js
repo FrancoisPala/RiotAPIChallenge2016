@@ -25,7 +25,7 @@ serv.listen(port);
 //Make sure your file has the .json extension to it. Also don't forget the quotes around your API-key! Have fun!
 let pathToYourApiKey = "./config.json";
 
-let clientNumber = 0;
+// this map is here to convert the region to actual regions to use with the riot api
 var PLATFORMS = {
     'br': 'BR1',
     'eune': 'EUN1',
@@ -43,7 +43,6 @@ var PLATFORMS = {
 function main () {
     console.log("Server started listening on port: " + port);
     io.on('connection', function (socket) {
-        ++clientNumber; //number of clients to ever connect on the site (per page load)
         let called = false; //this prevents users from spamming the "submit" button on the client and have us execute the same request too many times
         let ApiKey = ""; //the API-Key we got from the requesting
         let region = ""; //the summoner's region
@@ -52,14 +51,13 @@ function main () {
         let championsMap = {}; //a custom object containing info we need about the summoner's champions
         let toSend = {}; //the final thing to send to the client for it to print the info
 
-        console.log("Client n° " + clientNumber + " connected");
-
         socket.on("client info", function (data) {
             if (called == false){
                 called = true;
                 let tmp = data.split(",");
                 summonerName = tmp[0];
                 region = tmp[1].toLowerCase();
+                // this async.waterfall is our whole function for the code. It calls other waterfalls and all the function in this file
                 async.waterfall([
                     async.apply(getGameInfo, ApiKey, toSend, championsMap, region, summonerName, version),
                 ], function (err, ApiKey, toSend, championsMap, region, summonerName, version) {
@@ -141,7 +139,8 @@ function getPlayerInfo(ApiKey, toSend, championsMap, region, summonerName, versi
 }
 
 function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, version, callback) {
-    let req = "https://na.api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + summonerName + "?api_key=" + ApiKey;
+    let req = "https://" + region + ".api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + summonerName + "?api_key=" + ApiKey;
+    console.log(req);
     let sN = summonerName.replace(/\s+/g, '');
     sN = sN.toLowerCase();
     request(req, function (error, response, body) {
@@ -165,7 +164,7 @@ function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, versi
 }
 
 function getSummonerMasteries(infos, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
-    let req = "https://na.api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + infos.id + "/champions?api_key=" + ApiKey;
+    let req = "https://" + region + ".api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + infos.id + "/champions?api_key=" + ApiKey;
     request(req, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             let str = JSON.parse(body);
