@@ -141,13 +141,11 @@ function getPlayerInfo(ApiKey, toSend, championsMap, region, summonerName, versi
 
 function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, version, callback) {
     let req = "https://" + region + ".api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + summonerName + "?api_key=" + ApiKey;
-    console.log(req);
     let sN = summonerName.replace(/\s+/g, '');
     sN = sN.toLowerCase();
     request(req, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             let str = JSON.parse(body);
-            console.log(str);
             let id = {};
             id.id = str[sN].id;
             id.name = str[sN].name;
@@ -166,7 +164,7 @@ function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, versi
 
 function getSummonerMasteries(infos, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
     let req = "https://" + region + ".api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + infos.id + "/champions?api_key=" + ApiKey;
-    request(req, function (error, response, body) {
+    request(req, function (error, response, body) { 
         if (!error && response.statusCode == 200) {
             let str = JSON.parse(body);
             for (let i = 0; i < str.length; ++i) {
