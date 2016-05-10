@@ -2,28 +2,8 @@
  * Created by Jam on 03-May-16.
  */
 var socket = io();
-function validate(option) {
-    var summName;
-    var region;
-    if (option == 'main'){
-        summName = document.forms["form"]["summName"].value;
-        region = document.forms["form"]["regions"].value;
-    }
-    else if (option == 'head') {
-        summName = document.forms["formHead"]["summName"].value;
-        region = document.forms["formHead"]["regions"].value;
-        $("input.byname").val("");
-    }
-    if (summName && region) {
-        console.log(summName + region);
-        socket.emit("client info", summName + "," + region);
-    }
-    else {
-        $('#subBut').css("display", "block");
-    }
-    return false;
-}
 
+// Map used to sort champions by highest grade earned this season
 var GRADESMIX = {};
     GRADESMIX["S+"] = "A";
     GRADESMIX["S"] = "B";
@@ -41,7 +21,30 @@ var GRADESMIX = {};
     GRADESMIX["D"] = "N";
     GRADESMIX["D-"] = "O";
 
+function validate(option) {
+    var summName;
+    var region;
+    if (option == 'main'){
+        summName = document.forms["form"]["summName"].value;
+        region = document.forms["form"]["regions"].value;
+    }
+    else if (option == 'head') {
+        summName = document.forms["formHead"]["summName"].value;
+        region = document.forms["formHead"]["regions"].value;
+        $("input.byname").val("");
+        $(".mySN").val("");
+        $(".summoner").html("");
+    }
+    if (summName && region) {
+        socket.emit("client info", summName + "," + region);
+    }
+    else {
+        $('#subBut').css("display", "block");
+    }
+    return false;
+}
 
+// Function used to display all the champion mastery information retrieved for the current summoner on the page
 function displayChampInfos(elem, index, array) {
     var toAppend = '<div class=" mix champion col-md-3 col-xs-12 name-' + elem.name.toLowerCase()
         + '"' + 'data-name="' + elem.name
@@ -67,7 +70,7 @@ function displayChampInfos(elem, index, array) {
 socket.on("info sent", function(data) {
     $('.head').css("display", "block");
     $('#Display').html("");
-    data.forEach(displayChampInfos);
+    data.champMasteries.forEach(displayChampInfos);
     $('#Display').mixItUp();
     $('button').show();
     $('input').show();
@@ -76,37 +79,28 @@ socket.on("info sent", function(data) {
     }, 500, function () {
         $("#welcome").css("display", "none");
     });
+    $(".summoner").append('<img class="summoner-icon" src="'+data.infos.icon+'"><div class="summoner-infos">' + data.infos.name + '</br>Level ' + data.infos.level + '+</br>' + region + '</div>');
 });
 
 $(document).ready(function() {
-    /*
+
     $("button.buttons").click(function() {
         if (!$(this).hasClass("details")) {
             $("input.byname").val("");
-        }
-    });*/
-
-    $('#Display').mixItUp({
-        callbacks: {
-            onMixEnd: function(state){
-                console.log(state);
-            }   
+            $(".hidden").removeClass("hidden");
         }
     });
 
     $("button.grades-ascending").click(function() {
-        console.log("ASCENDING");
         $('#Display').mixItUp('sort', 'letter:desc points:asc');
         $(".current").toggleClass("current");
         $(this).toggleClass("current");
     });
     $("button.grades-descending").click(function() {
-        console.log("DESCENDING");
         $('#Display').mixItUp('sort', 'letter:asc points:desc');
         $(".current").toggleClass("current");
         $(this).toggleClass("current");
     });
-
 
     $("button.details").click(function() {
         $(".insideBox").toggle(350);
@@ -150,15 +144,10 @@ $(document).ready(function() {
 
     $("input.byname").on("keyup", function() {
         var name = $(this).val();
-        console.log("name = [" + name + "]");
         if (name.length != 0) {
-            console.log(name.length + "   --- ["+name+"]");
             if (name.length > 0) {
-                console.log("on hide");
                 $('div.champion').addClass("hidden");
             }
-            console.log("on fade in");
-//            $("div[class*='name-" + name + "']").fadeIn();
             $("div[class*='name-" + name + "']").removeClass("hidden");
         }
         else {

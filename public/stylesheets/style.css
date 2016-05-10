@@ -1,23 +1,13 @@
 body {
-  background-image: url("../images/background-riven-yasuo.png");
-  padding: 50px;
-  /*font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;*/
+    background-image: url("../images/background-riven-yasuo.png");
+    padding: 50px;
     background-attachment: fixed;
-    /*font-family: 'Bitter', serif !important;*/
     font-family: 'Rajdhani', sans-serif;
 }
 
 a {
-  color: #00B7FF;
+    color: #00B7FF;
 }
-
-/*.mid {
-    position: absolute;
-    top: 10%;
-    left: 20%;
-    height: 30%;
-    width: 50%;
-}*/
 
 .footer {
     position: fixed;
@@ -131,10 +121,7 @@ a {
 }
 
 .head {
-    /*margin-top:-40px !important;*/
-    /*padding-top: 10px;*/
     display: none;
-    /*height: 100px !important;*/
     background-color: rgba(0, 0, 0, 0.8) !important;
     color: rgb(220,137,0) !important;
     text-align: center;
@@ -193,6 +180,21 @@ img.championImage {
     display: none;
 }
 
-#Display .mix{
-    display: none;
+div.summoner {
+    float: left;
+    position: absolute;
+    margin-top: -12px;
+    text-align: left;
+}
+
+.summoner-icon {
+    height: 60px;
+    width: 60px;
+    float: left;
+}
+
+.summoner-infos {
+    display: inline-block;
+    padding: 10px;
+    padding-left: 15px;
 }
