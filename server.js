@@ -1,11 +1,12 @@
 "use strict";
 
-// S+ plz Projected created by Driss and François for the Riot API Challenge 2016.
-// This is the server. For it to work, follow these instructions:
-// See the example.json file in the project folder? Inside of it are instructions on how to make our program work.
-// Those are needed because you need an API-Key to use the program. We can't let you see our API-Keys so we need you to use your own.
-// Just put it in th example.json file following the instructions, and then make sure you reference the path to this file in the "pathToYourApiKey" variable lower in the file.
-//
+/*
+** S+ plz Projected created by Driss and François for the Riot API Challenge 2016.
+** This is the server. For it to work, follow these instructions:
+** See the example.json file in the project folder? Inside of it are instructions on how to make our program work.
+** Those are needed because you need an API-Key to use the program. We can't let you see our API-Keys so we need you to use your own.
+** Just put it in th example.json file following the instructions, and then make sure you reference the path to this file in the "pathToYourApiKey" variable lower in the file.
+*/
 
 var port = 8083;
 var express = require('express');
