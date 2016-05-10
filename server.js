@@ -151,6 +151,7 @@ function getSummonerId(ApiKey, toSend, championsMap, region, summonerName, versi
             let id = {};
             id.id = str[sN].id;
             id.name = str[sN].name;
+            id.region = str[sN].region;
             id.icon = "http://ddragon.leagueoflegends.com/cdn/6.9.1/img/profileicon/" + str[sN].profileIconId + ".png";
             id.level = str[sN].summonerLevel;
             callback(null, id, ApiKey, toSend, championsMap, region, summonerName, version);
@@ -192,6 +193,7 @@ function mergeInfo(infos, champMasteries, ApiKey, toSend, championsMap, region, 
         champMasteries[i].name = championsMap[champId][1];
         champMasteries[i].riotName = championsMap[champId][0];
         champMasteries[i].urlImage = urlSquare;
+
         champId = championsMap[champId];
     }
     toSend.champMasteries = champMasteries;
