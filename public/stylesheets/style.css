@@ -6,12 +6,11 @@ body {
 }
 
 a {
-    color: #00B7FF;
+    color: #006d99;
 }
 
 .footer {
-    position: fixed;
-    bottom: 0%;
+    font-weight: 600;
 }
 
 .jumbotron {
