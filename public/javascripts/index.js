@@ -21,6 +21,7 @@ var GRADESMIX = {};
     GRADESMIX["D"] = "N";
     GRADESMIX["D-"] = "O";
 
+// function used to validate the form of the user. Once the program validates summoner name and region, we send the event to the server to process the data.
 function validate(option) {
     var summName;
     var region;
@@ -67,6 +68,7 @@ function displayChampInfos(elem, index, array) {
     $("#Display").append(toAppend);
 }
 
+// function used to catch the event "info sent" sent from the server with the data and information to be displayed by the client
 socket.on("info sent", function(data) {
     $('.head').css("display", "block");
     $('#Display').html("");
