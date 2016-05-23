@@ -144,6 +144,14 @@ $(document).ready(function() {
         $(this).toggleClass("current");
     });
 
+    $("#subButHead").click(function() {
+        $(".insideBox").hide();
+        $("button.details").children("span").addClass("glyphicon-unchecked");
+        $("button.details").children("span").removeClass("glyphicon-check");
+        $(".current").removeClass("current");
+        $("button.points-descending").addClass("current");
+    });
+
     $("input.byname").on("keyup", function() {
         var name = $(this).val();
         if (name.length != 0) {
