@@ -94,6 +94,7 @@ function getVersion (ApiKey, toSend, championsMap, region, summonerName, version
         if (!error && response.statusCode == 200) {
             let str = JSON.parse(body);
             version = str[0];
+            console.log("Current version is: " + version);
             callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
@@ -172,6 +173,7 @@ function getSummonerMasteries(infos, ApiKey, toSend, championsMap, region, summo
                 delete str[i].lastPlayTime;
                 delete str[i].championPointsSinceLastLevel;
             }
+            console.log(str);
             callback(null,infos, str, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
@@ -185,8 +187,10 @@ function getSummonerMasteries(infos, ApiKey, toSend, championsMap, region, summo
 function mergeInfo(infos, champMasteries, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
     //in here we merge champion masteries and championsmap
     toSend.infos = infos;
+    //console.log(champMasteries);
     for (let i = 0; i < champMasteries.length; ++i) {
         let champId = champMasteries[i].championId;
+        console.log("champId:" + champId + "\nchampionsMap[champId]: " + championsMap[champId]);
         let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + version + "/img/champion/" + championsMap[champId][0] + ".png";
         champMasteries[i].name = championsMap[champId][1];
         champMasteries[i].riotName = championsMap[champId][0];
