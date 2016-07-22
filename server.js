@@ -1,6 +1,10 @@
 "use strict";
 
 /*
+** With promeses and closure
+ */
+
+/*
 ** S+ plz Projected created by Driss and François for the Riot API Challenge 2016.
 ** This is the server. For it to work, follow these instructions:
 ** See the example.json file in the project folder? Inside of it are instructions on how to make our program work.
