@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-** With promeses and closure
+** With promises and closure
  */
 
 /*
