@@ -55,9 +55,6 @@ function main () {
         let called = false; //this prevents users from spamming the "submit" button on the client and have us execute the same request too many times
         let region = ""; //the summoner's region
         let summonerName = ""; //the summoner's name
-        let version = ""; //the current version of the game, for the square pictures we decided to always use the latest ones
-        let championsMap = {}; //a custom object containing info we need about the summoner's champions
-        let toSend = {}; //the final thing to send to the client for it to print the info
 
         socket.on("client info", function (data) {
             if (called == false){
@@ -65,8 +62,39 @@ function main () {
                 let tmp = data.split(",");
                 summonerName = tmp[0];
                 region = tmp[1].toLowerCase();
-                var a = sendInfo(region, summonerName, socket);
+                var a = sendInfo();
 
+              function sendInfo() {
+                Promise.all([
+                    getGameInfo(region),
+                    getPlayerInfo(region, summonerName)
+                  ])
+                  .then(values => {
+                    var send = mergeInfo(values[0], values[1]);
+                    socket.emit("info sent", send);
+                    called = false;
+                  });
+
+                function mergeInfo(versionChampions, playerInfo){
+                  let toSend = {};
+
+                  let championsMap = versionChampions[1];
+                  let champMasteries = playerInfo[1];
+                  toSend.infos = playerInfo[0];
+
+                  for (let i = 0; i < champMasteries.length; ++i) {
+                    let champId = champMasteries[i].championId;
+                    let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + versionChampions[0] + "/img/champion/" + championsMap[champId][0] + ".png";
+                    champMasteries[i].name = championsMap[champId][1];
+                    champMasteries[i].riotName = championsMap[champId][0];
+                    champMasteries[i].urlImage = urlSquare;
+
+                    champId = championsMap[champId];
+                  }
+                  toSend.champMasteries = champMasteries;
+                  return toSend;
+                }
+              }
             }
         });
     });
@@ -183,38 +211,6 @@ function getSummonerId(region, summonerName) {
         }
       });
     });
-}
-
-function sendInfo(region, summonerName, socket) {
-  Promise.all([
-    getGameInfo(region),
-    getPlayerInfo(region, summonerName)
-  ])
-  .then(values => {
-    var send = mergeInfo(values[0], values[1]);
-    socket.emit("info sent", send);
-    this.called = false;
-  });
-
-  function mergeInfo(versionChampions, playerInfo){
-    let toSend = {};
-
-    let championsMap = versionChampions[1];
-    let champMasteries = playerInfo[1];
-    toSend.infos = playerInfo[0];
-
-    for (let i = 0; i < champMasteries.length; ++i) {
-      let champId = champMasteries[i].championId;
-      let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + versionChampions[0] + "/img/champion/" + championsMap[champId][0] + ".png";
-      champMasteries[i].name = championsMap[champId][1];
-      champMasteries[i].riotName = championsMap[champId][0];
-      champMasteries[i].urlImage = urlSquare;
-
-      champId = championsMap[champId];
-    }
-    toSend.champMasteries = champMasteries;
-    return toSend;
-  }
 }
 
 main();
