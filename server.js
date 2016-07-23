@@ -65,39 +65,7 @@ function main () {
                 let tmp = data.split(",");
                 summonerName = tmp[0];
                 region = tmp[1].toLowerCase();
-                // this async.waterfall is our whole function for the code. It calls other waterfalls and all the function in this file
-
-
-                /**
-                 * THIS IS TO BE SPLITTED IN TWO: getGameInfo and getUserInfo. Those funcs now have to run asynchronously using promises, in a synchronous function (mergeInfo).
-                 *
-                 */
-
-                  // La moitié des infos sont la
-                  var test = getGameInfo(region);
-                  test.then(function(championsMap) {
-                    console.log("map is in the merge");
-                  });
-
-                  //l'autre moitié ici pls
-                  var playerInfo = getPlayerInfo(region, summonerName);
-                  playerInfo.then(function(more) {
-                    console.log(more);
-                  });
-
-
-                //async.waterfall([
-                //  async.apply(getGameInfo, ApiKey, toSend, championsMap, region, summonerName, version),
-                //], function (err, ApiKey, toSend, championsMap, region, summonerName, version) {
-                //    if (!err) {
-                //        socket.emit("info sent", toSend);
-                //        called = false;
-                //    }
-                //});
-
-
-
-
+                var a = sendInfo(region, summonerName, socket);
 
             }
         });
@@ -105,22 +73,12 @@ function main () {
 }
 
 function getGameInfo(region) {
-  //async.waterfall([
-  //    async.apply(getApiKey, pathToYourApiKey, ApiKey, toSend, championsMap, region, summonerName, version),
-  //    getVersion,
-  //    getChampionsJson,
-  //    getPlayerInfo
-  //], function (err, ApiKey, toSend, championsMap, region, summonerName, version) {
-  //    callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
-  //});
-
   function logError(e) {
     console.error("error is:" + e);
     throw (e);
   }
   var a = getVersion(region);
   var b = a.then(function (version) {
-    console.log("in the getchampionjson " + version);
     let req = "http://ddragon.leagueoflegends.com/cdn/" + version + "/data/en_US/champion.json " ;
 
     return new Promise(function(resolve, reject) {
@@ -139,8 +97,6 @@ function getGameInfo(region) {
             champTmp.push(str[champ].name);
             championsMap[str[champ].key] = champTmp;
           }
-
-          console.log("got the map");
           resolve(championsMap);
         }
         else {
@@ -157,20 +113,16 @@ function getGameInfo(region) {
   var all = b.then(function(val) {
     //console.log(val);
   });
-  //return Promise.resolve(all);
-  return Promise.all([b]);
+  return Promise.all([a, b]);
 
 }
 
 function getVersion (region) {
-  console.log("in the getVersion: " + ApiKey);
     let req = "https://global.api.pvp.net/api/lol/static-data/" + region + "/v1.2/versions?api_key=" + ApiKey;
     return rp({uri: req, json: true})
       .then(function (data) {
         let version = "";
-        //let str = JSON.parse(body);
         version = data[0];
-        console.log("Current version is: " + version);
         return Promise.resolve(version);
       })
       .catch(function(e) {
@@ -178,69 +130,11 @@ function getVersion (region) {
         return Promise.resolve("Request Fail");
       })
     ;
-  //{
-  //      if (!error && response.statusCode == 200) {
-  //        let version = "";
-  //          let str = JSON.parse(body);
-  //          version = str[0];
-  //          console.log("Current version is: " + version);
-  //        return Promise.resolve(version);
-  //      }
-  //      else {
-  //          if (error && response) {
-  //              console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
-  //          }
-  //        return Promise.resolve("Fail");
-  //      }
-  //  });
 }
 
-//function getChampionsJson (version) {
-//  console.log("in the getchampionjson " + version);
-//    let req = "http://ddragon.leagueoflegends.com/cdn/" + version + "/data/en_US/champion.json " ;
-//    request(req, function (error, response, body) {
-//        if (!error && response.statusCode == 200) {
-//          let championsMap = {};
-//            let str = JSON.parse(body);
-//            delete str.type;
-//            delete str.format;
-//            delete str.version;
-//            str = str.data;
-//            for (let champ in str) {
-//                let champTmp = [];
-//                champTmp.push(str[champ].id);
-//                champTmp.push(str[champ].name);
-//                championsMap[str[champ].key] = champTmp;
-//            }
-//
-//          //console.log(championsMap);
-//          return Promise.resolve(championsMap);
-//
-//          //callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
-//        }
-//        else {
-//          console.log("ERROR");
-//            if (error && response) {
-//                console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
-//            }
-//          return Promise.resolve("Fail");
-//        }
-//    });
-//}
-
 function getPlayerInfo(region, summonerName) {
-    //async.waterfall([
-    //    async.apply(getSummonerId, ApiKey, toSend, championsMap, region, summonerName, version),
-    //    getSummonerMasteries,
-    //    mergeInfo
-    //], function (err, ApiKey, toSend, championsMap, region, summonerName, version) {
-    //    callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
-    //});
-
-
   let a = getSummonerId(region, summonerName);
   let b = a.then(function(infos) {
-    console.log(infos);
     let req = "https://" + region + ".api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + infos.id + "/champions?api_key=" + ApiKey;
     return new Promise (function(resolve, reject) {
         request(req, function (error, response, body) {
@@ -251,7 +145,6 @@ function getPlayerInfo(region, summonerName) {
               delete str[i].lastPlayTime;
               delete str[i].championPointsSinceLastLevel;
             }
-            //console.log(str);
             resolve(str);
           }
           else {
@@ -263,7 +156,6 @@ function getPlayerInfo(region, summonerName) {
       });
     });
   let all = b.then(function (value) {
-    console.log("alors la: " + value);
   });
 return Promise.all([a, b]);
 }
@@ -283,7 +175,6 @@ function getSummonerId(region, summonerName) {
           id.icon = "http://ddragon.leagueoflegends.com/cdn/6.9.1/img/profileicon/" + str[sN].profileIconId + ".png";
           id.level = str[sN].summonerLevel;
           resolve(id);
-          //callback(null, id, ApiKey, toSend, championsMap, region, summonerName, version);
         }
         else {
           if (error && response) {
@@ -294,40 +185,36 @@ function getSummonerId(region, summonerName) {
     });
 }
 
-//function getSummonerMasteries(infos, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
-//    let req = "https://" + region + ".api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + infos.id + "/champions?api_key=" + ApiKey;
-//    request(req, function (error, response, body) {
-//        if (!error && response.statusCode == 200) {
-//            let str = JSON.parse(body);
-//            for (let i = 0; i < str.length; ++i) {
-//                delete str[i].playerId;
-//                delete str[i].lastPlayTime;
-//                delete str[i].championPointsSinceLastLevel;
-//            }
-//            callback(null,infos, str, ApiKey, toSend, championsMap, region, summonerName, version);
-//        }
-//        else {
-//            if (error && response){
-//                console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
-//            }
-//        }
-//    });
-//}
+function sendInfo(region, summonerName, socket) {
+  Promise.all([
+    getGameInfo(region),
+    getPlayerInfo(region, summonerName)
+  ])
+  .then(values => {
+    var send = mergeInfo(values[0], values[1]);
+    socket.emit("info sent", send);
+    this.called = false;
+  });
 
-function mergeInfo(infos, champMasteries, ApiKey, toSend, championsMap, region, summonerName, version, callback) {
-    //in here we merge champion masteries and championsmap
-    toSend.infos = infos;
+  function mergeInfo(versionChampions, playerInfo){
+    let toSend = {};
+
+    let championsMap = versionChampions[1];
+    let champMasteries = playerInfo[1];
+    toSend.infos = playerInfo[0];
+
     for (let i = 0; i < champMasteries.length; ++i) {
-        let champId = champMasteries[i].championId;
-        let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + version + "/img/champion/" + championsMap[champId][0] + ".png";
-        champMasteries[i].name = championsMap[champId][1];
-        champMasteries[i].riotName = championsMap[champId][0];
-        champMasteries[i].urlImage = urlSquare;
+      let champId = champMasteries[i].championId;
+      let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + versionChampions[0] + "/img/champion/" + championsMap[champId][0] + ".png";
+      champMasteries[i].name = championsMap[champId][1];
+      champMasteries[i].riotName = championsMap[champId][0];
+      champMasteries[i].urlImage = urlSquare;
 
-        champId = championsMap[champId];
+      champId = championsMap[champId];
     }
     toSend.champMasteries = champMasteries;
-    callback(null, ApiKey, toSend, championsMap, region, summonerName, version);
+    return toSend;
+  }
 }
 
 main();
