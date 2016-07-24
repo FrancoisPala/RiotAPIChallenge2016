@@ -18,10 +18,8 @@ var app = express();
 var serv = require('http').Server(app);
 
 var request = require('request');
-var async = require('async');
+//var async = require('async');
 var rp = require('request-promise');
-//var promise = require('promise');
-//var Q = require('q');
 
 var io = require('socket.io')(serv);
 
@@ -58,11 +56,12 @@ function main () {
 
         socket.on("client info", function (data) {
             if (called == false){
-                called = true;
-                let tmp = data.split(",");
-                summonerName = tmp[0];
-                region = tmp[1].toLowerCase();
-                var a = sendInfo();
+              called = true;
+              let tmp = data.split(",");
+              summonerName = tmp[0];
+              region = tmp[1].toLowerCase();
+
+              var a = sendInfo();
 
               function sendInfo() {
                 Promise.all([
@@ -101,61 +100,40 @@ function main () {
 }
 
 function getGameInfo(region) {
-  function logError(e) {
-    console.error("error is:" + e);
-    throw (e);
-  }
   var a = getVersion(region);
   var b = a.then(function (version) {
     let req = "http://ddragon.leagueoflegends.com/cdn/" + version + "/data/en_US/champion.json " ;
-
-    return new Promise(function(resolve, reject) {
-      request(req, function (error, response, body) {
+    return rp({uri: req, json: true})
+      .then( function(data) {
         let championsMap = {};
-
-        if (!error && response.statusCode == 200) {
-          let str = JSON.parse(body);
-          delete str.type;
-          delete str.format;
-          delete str.version;
-          str = str.data;
-          for (let champ in str) {
-            let champTmp = [];
-            champTmp.push(str[champ].id);
-            champTmp.push(str[champ].name);
-            championsMap[str[champ].key] = champTmp;
-          }
-          resolve(championsMap);
+        let str = data.data;
+        for (let champ in str) {
+          championsMap[str[champ].key] = [str[champ].id, str[champ].name] ;
         }
-        else {
-          console.log("ERROR");
-          if (error && response) {
-            console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
-          }
-          return Promise.resolve("Fail");
-        }
-      });
-    });
-  });
-
-  var all = b.then(function(val) {
-    //console.log(val);
+        return Promise.resolve(championsMap);
+      })
+      .catch (function (e) {
+        return Promise.reject(new Error("ChampionJSON Request Fail"));
+      })
+      .catch(function(err) {
+        console.error(err);
+      })
+    ;
   });
   return Promise.all([a, b]);
-
 }
 
 function getVersion (region) {
     let req = "https://global.api.pvp.net/api/lol/static-data/" + region + "/v1.2/versions?api_key=" + ApiKey;
     return rp({uri: req, json: true})
       .then(function (data) {
-        let version = "";
-        version = data[0];
-        return Promise.resolve(version);
+        return Promise.resolve(data[0]);
       })
       .catch(function(e) {
-        console.log("get version request failed");
-        return Promise.resolve("Request Fail");
+        return Promise.reject(new Error("GetVersion Request Fail"));
+      })
+      .catch(function(err) {
+        console.error(err);
       })
     ;
 }
@@ -164,53 +142,49 @@ function getPlayerInfo(region, summonerName) {
   let a = getSummonerId(region, summonerName);
   let b = a.then(function(infos) {
     let req = "https://" + region + ".api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + infos.id + "/champions?api_key=" + ApiKey;
-    return new Promise (function(resolve, reject) {
-        request(req, function (error, response, body) {
-          if (!error && response.statusCode == 200) {
-            let str = JSON.parse(body);
-            for (let i = 0; i < str.length; ++i) {
-              delete str[i].playerId;
-              delete str[i].lastPlayTime;
-              delete str[i].championPointsSinceLastLevel;
-            }
-            resolve(str);
-          }
-          else {
-            if (error && response){
-              console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
-            }
-          }
-        });
-      });
-    });
-  let all = b.then(function (value) {
+    return rp({uri: req, json: true})
+      .then( function(str) {
+        for (let i = 0; i < str.length; ++i) {
+          delete str[i].playerId;
+          delete str[i].lastPlayTime;
+          delete str[i].championPointsSinceLastLevel;
+        }
+        return Promise.resolve(str);
+      })
+      .catch( function(e) {
+        return Promise.reject(new Error("ChampionMastery Request Failed"));
+      })
+      .catch(function(err) {
+        console.error(err);
+      })
+    ;
   });
-return Promise.all([a, b]);
+  return Promise.all([a, b]);
 }
 
 function getSummonerId(region, summonerName) {
     let req = "https://" + region + ".api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + summonerName + "?api_key=" + ApiKey;
     let sN = summonerName.replace(/\s+/g, '');
     sN = sN.toLowerCase();
-    return new Promise (function(resolve, reject) {
-      request(req, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-          let str = JSON.parse(body);
-          let id = {};
-          id.id = str[sN].id;
-          id.name = str[sN].name;
-          id.region = region;
-          id.icon = "http://ddragon.leagueoflegends.com/cdn/6.9.1/img/profileicon/" + str[sN].profileIconId + ".png";
-          id.level = str[sN].summonerLevel;
-          resolve(id);
-        }
-        else {
-          if (error && response) {
-            console.log("Problem with the request, error is: " + error + " with status code " + response.statusCode);
-          }
-        }
-      });
-    });
+
+    return rp({uri: req, json: true})
+      .then(function (str) {
+        let id = {
+          id: str[sN].id,
+          name: str[sN].name,
+          region: region,
+          icon: "http://ddragon.leagueoflegends.com/cdn/6.9.1/img/profileicon/" + str[sN].profileIconId + ".png",
+          level: str[sN].summonerLevel
+        };
+        return Promise.resolve(id);
+      })
+      .catch(function(e) {
+        return Promise.reject(new Error("SummonerId Request Failed"));
+      })
+      .catch(function(err) {
+        console.error(err);
+      })
+    ;
 }
 
 main();
