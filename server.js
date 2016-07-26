@@ -16,12 +16,9 @@ var port = 8083;
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
-
-var request = require('request');
-//var async = require('async');
-var rp = require('request-promise');
-
 var io = require('socket.io')(serv);
+
+var PObj = require('./proc_obj.js');
 
 app.use(express.static('public'));
 
@@ -32,140 +29,21 @@ serv.listen(port);
 //let pathToYourApiKey = "./config.json";
 let ApiKey = require("./config.json");
 
-// this map is here to convert the region to actual regions to use with the riot api
-var PLATFORMS = {
-    'br': 'BR1',
-    'eune': 'EUN1',
-    'euw': 'EUW1',
-    'kr': 'KR',
-    'lan': 'LA1',
-    'las': 'LA2',
-    'na': 'NA1',
-    'oce': 'OC1',
-    'tr': 'TR1',
-    'ru': 'RU',
-    'pbe': 'PBE'
-};
-
 function main () {
     console.log("Server started listening on port: " + port);
     io.on('connection', function (socket) {
         let called = false; //this prevents users from spamming the "submit" button on the client and have us execute the same request too many times
-        socket.on("client info", function (data) {
+        socket.on("client info", function (tmp) {
             if (called == false){
               called = true;
-              let tmp = data.split(",");
-              let summonerName = tmp[0];
-              let region = tmp[1].toLowerCase();
-              sendInfo();
-              function sendInfo() {
-                Promise.all([
-                    getGameInfo(region),
-                    getPlayerInfo(region, summonerName)
-                  ])
-                  .then(values => {
-                    socket.emit("info sent", mergeInfo(values[0], values[1]));
-                    called = false;
-                  });
-                function mergeInfo(versionChampions, playerInfo){
-                  let toSend = {};
-                  let championsMap = versionChampions[1];
-                  let champMasteries = playerInfo[1];
-                  toSend.infos = playerInfo[0];
-                  for (let i = 0; i < champMasteries.length; ++i) {
-                    let champId = champMasteries[i].championId;
-                    let urlSquare = "http://ddragon.leagueoflegends.com/cdn/" + versionChampions[0] + "/img/champion/" + championsMap[champId][0] + ".png";
-                    champMasteries[i].name = championsMap[champId][1];
-                    champMasteries[i].riotName = championsMap[champId][0];
-                    champMasteries[i].urlImage = urlSquare;
-                    champId = championsMap[champId];
-                  }
-                  toSend.champMasteries = champMasteries;
-                  return toSend;
-                }
-              }
+              var proc = new PObj(ApiKey, tmp, socket);
+              let changeCalled = proc.sendInfo();
+              changeCalled.then(function(data) {
+                called = data;
+              });
             }
         });
     });
-}
-
-function getGameInfo(region) {
-  var promiseGetVersion = getVersion(region);
-  var promiseGetJSON = promiseGetVersion.then(function (version) {
-    let req = "http://ddragon.leagueoflegends.com/cdn/" + version + "/data/en_US/champion.json " ;
-    return rp({uri: req, json: true})
-      .then( function(data) {
-        let championsMap = {};
-        let str = data.data;
-        for (let champ in str) {
-          championsMap[str[champ].key] = [str[champ].id, str[champ].name] ;
-        }
-        return championsMap;
-      })
-      .catch (function (e) {
-        console.error("ChampionJSON Request Fail");
-        return Promise.reject(new Error("ChampionJSON Request Fail"));
-      })
-    ;
-  });
-  return Promise.all([promiseGetVersion, promiseGetJSON]);
-}
-
-function getVersion (region) {
-    let req = "https://global.api.pvp.net/api/lol/static-data/" + region + "/v1.2/versions?api_key=" + ApiKey;
-    return rp({uri: req, json: true})
-      .then(function (data) {
-        return data[0];
-      })
-      .catch(function(e) {
-        console.error("GetVersion Request Fail");
-        return Promise.reject(new Error("GetVersion Request Fail"));
-      })
-    ;
-}
-
-function getPlayerInfo(region, summonerName) {
-  let promiseGetSummId = getSummonerId(region, summonerName);
-  let promiseGetSummMastery = promiseGetSummId.then(function(infos) {
-    let req = "https://" + region + ".api.pvp.net/championmastery/location/" + PLATFORMS[region] + "/player/" + infos.id + "/champions?api_key=" + ApiKey;
-    return rp({uri: req, json: true})
-      .then( function(str) {
-        for (let i = 0; i < str.length; ++i) {
-          delete str[i].playerId;
-          delete str[i].lastPlayTime;
-          delete str[i].championPointsSinceLastLevel;
-        }
-        return str;
-      })
-      .catch( function(e) {
-        console.error("ChampionMastery Request Failed");
-        return Promise.reject(new Error("ChampionMastery Request Failed"));
-      })
-    ;
-  });
-  return Promise.all([promiseGetSummId, promiseGetSummMastery]);
-}
-
-function getSummonerId(region, summonerName) {
-    let req = "https://" + region + ".api.pvp.net/api/lol/" + region + "/v1.4/summoner/by-name/" + summonerName + "?api_key=" + ApiKey;
-    let sN = summonerName.replace(/\s+/g, '');
-    sN = sN.toLowerCase();
-    return rp({uri: req, json: true})
-      .then(function (str) {
-        let id = {
-          id: str[sN].id,
-          name: str[sN].name,
-          region: region,
-          icon: "http://ddragon.leagueoflegends.com/cdn/6.9.1/img/profileicon/" + str[sN].profileIconId + ".png",
-          level: str[sN].summonerLevel
-        };
-        return id;
-      })
-      .catch(function(e) {
-        console.error("SummonerId Request Failed");
-        return Promise.reject(new Error("SummonerId Request Failed"));
-      })
-    ;
 }
 
 main();
